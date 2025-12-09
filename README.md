@@ -212,7 +212,7 @@ Dec 13 → 🚨 PASSED DEADLINE (URGENT - red)
 ## 🔒 Security Notes
 
 - Passwords are hashed using SHA-256
-- Data stored locally in SQLite database
+- Data stored locally in a Postgresql database
 - No cloud storage - all data remains on your device
 - Each user has isolated data
 
@@ -323,5 +323,6 @@ For issues or questions:
 **Built with ❤️ for graduate students managing multiple applications**
 
 🎓 Good luck with your PhD and Masters applications! 📚
+
 
 
