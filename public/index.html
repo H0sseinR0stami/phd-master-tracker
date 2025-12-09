@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhD & Masters Application Tracker v4.3 - Smart Reminders</title>
+    <style>
+        :root {
+            --color-primary: #208096;
+            --color-primary-hover: #1a6978;
+            --color-primary-active: #145361;
+            --color-success: #208096;
+            --color-warning: #a84b2f;
+            --color-error: #c0152f;
+            --color-bg: #fcfcf9;
+            --color-surface: #ffffff;
+            --color-text: #134252;
+            --color-text-secondary: #626c7c;
+            --color-border: #c8b8a0;
+            --color-input-bg: #fefdfb;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #208096 0%, #145361 100%);
+            padding: var(--spacing-md);
+        }
+
+        .login-container {
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            padding: var(--spacing-lg);
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin: 0 0 var(--spacing-sm) 0;
+            color: var(--color-primary);
+        }
+
+        .login-header p {
+            margin: 0;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .login-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 14px;
+            background-color: var(--color-input-bg);
+            color: var(--color-text);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(32, 128, 150, 0.1);
+        }
+
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        .btn-logout {
+            background-color: var(--color-error);
+            color: white;
+            padding: 6px 12px;
+            width: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            background: var(--color-surface);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .section {
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 var(--spacing-md) 0;
+            color: var(--color-text);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .form-row-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        @media (max-width: 768px) {
+            .form-row, .form-row-3, .form-row-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        @media (max-width: 1024px) {
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+
+        .stat-card.urgent {
+            border-color: var(--color-error);
+            background-color: rgba(192, 21, 47, 0.05);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .stat-card.urgent .stat-value {
+            color: var(--color-error);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-top: 4px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+            font-size: 13px;
+        }
+
+        th {
+            background-color: rgba(32, 128, 150, 0.1);
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--color-border);
+            font-size: 12px;
+        }
+
+        td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background-color: rgba(32, 128, 150, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-no-reply {
+            background-color: rgba(98, 108, 113, 0.15);
+            color: #626c7c;
+        }
+
+        .status-replied {
+            background-color: rgba(32, 128, 150, 0.15);
+            color: var(--color-primary);
+        }
+
+        .status-positive {
+            background-color: rgba(32, 128, 150, 0.2);
+            color: var(--color-success);
+        }
+
+        .status-interview {
+            background-color: rgba(230, 129, 97, 0.15);
+            color: var(--color-warning);
+        }
+
+        .status-rejected {
+            background-color: rgba(192, 21, 47, 0.15);
+            color: var(--color-error);
+        }
+
+        .status-pending {
+            background-color: rgba(98, 108, 113, 0.15);
+            color: #626c7c;
+        }
+
+        .status-applied {
+            background-color: rgba(32, 128, 150, 0.15);
+            color: var(--color-primary);
+        }
+
+        .status-accepted {
+            background-color: rgba(32, 128, 150, 0.2);
+            color: var(--color-success);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(32, 128, 150, 0.1);
+        }
+
+        .btn-danger {
+            background-color: var(--color-error);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            width: auto;
+        }
+
+        .btn-info {
+            background-color: var(--color-primary);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            width: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--color-text-secondary);
+        }
+
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .alert-success {
+            background-color: rgba(32, 128, 150, 0.15);
+            color: var(--color-success);
+            border: 1px solid rgba(32, 128, 150, 0.3);
+        }
+
+        .alert-error {
+            background-color: rgba(192, 21, 47, 0.15);
+            color: var(--color-error);
+            border: 1px solid rgba(192, 21, 47, 0.3);
+        }
+
+        .reminder-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-left: 4px solid transparent;
+        }
+
+        .reminder-card.urgent {
+            border-left-color: var(--color-error);
+            background-color: rgba(192, 21, 47, 0.05);
+        }
+
+        .reminder-card.warning {
+            border-left-color: var(--color-warning);
+            background-color: rgba(168, 75, 47, 0.05);
+        }
+
+        .reminder-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .reminder-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            font-size: 13px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .reminder-meta-label {
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .reminder-meta-value {
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .urgency-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .urgency-critical {
+            background-color: var(--color-error);
+            color: white;
+        }
+
+        .urgency-high {
+            background-color: var(--color-warning);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            border-radius: var(--radius);
+            padding: var(--spacing-lg);
+            max-width: 800px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+        }
+
+        .close-btn:hover {
+            color: var(--color-text);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-controls select, .filter-controls input {
+            flex: 0 1 auto;
+            min-width: 150px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .action-links {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🎓 Application Tracker</h1>
+                <p>Manage your PhD & Masters applications</p>
+            </div>
+
+            <div class="login-tabs">
+                <button class="login-tab active" onclick="switchLoginTab('login')">Sign In</button>
+                <button class="login-tab" onclick="switchLoginTab('register')">Create Profile</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form class="login-form active" id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+                <div id="login-error" style="color: var(--color-error); font-size: 12px; margin-top: var(--spacing-md);"></div>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form class="login-form" id="register-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password (min 6 chars)</label>
+                    <input type="password" id="register-password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="register-phone">Phone (Optional)</label>
+                    <input type="text" id="register-phone">
+                </div>
+                <button type="submit" class="btn btn-primary">Create Profile</button>
+                <div id="register-error" style="color: var(--color-error); font-size: 12px; margin-top: var(--spacing-md);"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION -->
+    <div id="main-app" style="display: none;">
+        <div class="container">
+            <header>
+                <div>
+                    <h1>🎓 PhD & Masters Tracker v4.3</h1>
+                </div>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <div class="user-name" id="display-name">User</div>
+                        <div class="user-email" id="display-email">email@example.com</div>
+                    </div>
+                    <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+                </div>
+            </header>
+
+            <div id="alert-container"></div>
+
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-count">0</div>
+                    <div class="stat-label">Total Applications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pending-count">0</div>
+                    <div class="stat-label">Pending Masters</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="noreply-count">0</div>
+                    <div class="stat-label">No Reply PhD</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="applied-count">0</div>
+                    <div class="stat-label">Applied</div>
+                </div>
+                <div class="stat-card urgent" id="deadline-card">
+                    <div class="stat-value" id="deadline-count">0</div>
+                    <div class="stat-label">🚨 Active Reminders</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab(event, 'add-phd')">➕ Add PhD</button>
+                <button class="tab" onclick="switchTab(event, 'add-masters')">➕ Add Masters</button>
+                <button class="tab" onclick="switchTab(event, 'reminders')">🔔 Reminders</button>
+                <button class="tab" onclick="switchTab(event, 'phd-tracker')">🎓 PhD Tracker</button>
+                <button class="tab" onclick="switchTab(event, 'masters-tracker')">📚 Masters Tracker</button>
+            </div>
+
+            <!-- ADD PhD TAB -->
+            <div id="add-phd" class="tab-content active">
+                <div class="section">
+                    <h2 class="section-title">Add PhD Program Contact</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phd-professor-name">Professor Name *</label>
+                            <input type="text" id="phd-professor-name" placeholder="e.g., Dr. Jane Smith" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phd-degree">Degree</label>
+                            <select id="phd-degree">
+                                <option value="PhD">PhD</option>
+                                <option value="Prof">Prof</option>
+                                <option value="Dr">Dr</option>
+                                <option value="Associate Prof">Associate Prof</option>
+                                <option value="Assistant Prof">Assistant Prof</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phd-university">University *</label>
+                            <input type="text" id="phd-university" placeholder="e.g., MIT" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phd-country">Country *</label>
+                            <select id="phd-country" required>
+                                <option value="">Select Country</option>
+                                <option value="USA">🇺🇸 United States</option>
+                                <option value="Canada">🇨🇦 Canada</option>
+                                <option value="UK">🇬🇧 United Kingdom</option>
+                                <option value="Germany">🇩🇪 Germany</option>
+                                <option value="Netherlands">🇳🇱 Netherlands</option>
+                                <option value="Switzerland">🇨🇭 Switzerland</option>
+                                <option value="Australia">🇦🇺 Australia</option>
+                                <option value="France">🇫🇷 France</option>
+                                <option value="Sweden">🇸🇪 Sweden</option>
+                                <option value="Denmark">🇩🇰 Denmark</option>
+                                <option value="Singapore">🇸🇬 Singapore</option>
+                                <option value="Japan">🇯🇵 Japan</option>
+                                <option value="South Korea">🇰🇷 South Korea</option>
+                                <option value="Taiwan">🇹🇼 Taiwan</option>
+                                <option value="Israel">🇮🇱 Israel</option>
+                                <option value="Iran">🇮🇷 Iran</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phd-department">Department</label>
+                            <input type="text" id="phd-department" placeholder="e.g., Computer Science">
+                        </div>
+                        <div class="form-group">
+                            <label for="phd-email">Email *</label>
+                            <input type="email" id="phd-email" placeholder="professor@university.edu" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phd-research">Research Focus *</label>
+                        <input type="text" id="phd-research" placeholder="AI, ML, Hardware, etc" required>
+                    </div>
+
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="phd-prof-webpage">Prof Webpage</label>
+                            <input type="url" id="phd-prof-webpage" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="phd-scholar">Google Scholar</label>
+                            <input type="url" id="phd-scholar" placeholder="https://scholar.google.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label for="phd-faculty-page">Faculty Page</label>
+                            <input type="url" id="phd-faculty-page" placeholder="https://...">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phd-email-sent-date">Email Sent Date *</label>
+                            <input type="date" id="phd-email-sent-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phd-follow-up">Follow-up Reminder Date *</label>
+                            <input type="date" id="phd-follow-up" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phd-status">Status</label>
+                        <select id="phd-status">
+                            <option value="no-reply">No Reply Yet</option>
+                            <option value="replied">Replied</option>
+                            <option value="positive">Positive Response</option>
+                            <option value="interview">Interview Scheduled</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phd-notes">Notes</label>
+                        <textarea id="phd-notes" placeholder="Any important notes..."></textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="addPhDContact()">Add PhD Contact</button>
+                        <button class="btn btn-secondary" onclick="clearPhDForm()">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD MASTERS TAB -->
+            <div id="add-masters" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">Add Masters Program Application</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="masters-country">Country *</label>
+                            <select id="masters-country" required>
+                                <option value="">Select Country</option>
+                                <option value="USA">🇺🇸 United States</option>
+                                <option value="Canada">🇨🇦 Canada</option>
+                                <option value="UK">🇬🇧 United Kingdom</option>
+                                <option value="Germany">🇩🇪 Germany</option>
+                                <option value="Netherlands">🇳🇱 Netherlands</option>
+                                <option value="Switzerland">🇨🇭 Switzerland</option>
+                                <option value="Australia">🇦🇺 Australia</option>
+                                <option value="France">🇫🇷 France</option>
+                                <option value="Sweden">🇸🇪 Sweden</option>
+                                <option value="Denmark">🇩🇰 Denmark</option>
+                                <option value="Singapore">🇸🇬 Singapore</option>
+                                <option value="Japan">🇯🇵 Japan</option>
+                                <option value="South Korea">🇰🇷 South Korea</option>
+                                <option value="Taiwan">🇹🇼 Taiwan</option>
+                                <option value="Israel">🇮🇱 Israel</option>
+                                <option value="Iran">🇮🇷 Iran</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-university">University *</label>
+                            <input type="text" id="masters-university" placeholder="e.g., TU Munich" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="masters-major">Major/Program *</label>
+                            <input type="text" id="masters-major" placeholder="e.g., Computer Science" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-priority">Priority</label>
+                            <select id="masters-priority">
+                                <option value="high">🔴 High Priority</option>
+                                <option value="medium">🟡 Medium Priority</option>
+                                <option value="low">🟢 Low Priority</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="masters-admission-fee">Admission Fee (€)</label>
+                            <input type="number" id="masters-admission-fee" placeholder="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-tuition-fee">Tuition Fee/Year (€)</label>
+                            <input type="number" id="masters-tuition-fee" placeholder="10000">
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-gre">GRE Needed?</label>
+                            <select id="masters-gre">
+                                <option value="no">Not Required</option>
+                                <option value="yes">Required</option>
+                                <option value="optional">Optional</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="masters-language">Language Test</label>
+                            <select id="masters-language">
+                                <option value="">Select Test</option>
+                                <option value="IELTS">IELTS</option>
+                                <option value="TOEFL">TOEFL</option>
+                                <option value="PTE">PTE</option>
+                                <option value="Duolingo">Duolingo</option>
+                                <option value="DSH">DSH (German)</option>
+                                <option value="None">None</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-route">Application Route</label>
+                            <select id="masters-route">
+                                <option value="">Select Route</option>
+                                <option value="direct">Direct Application</option>
+                                <option value="uni-assist">Uni-Assist (Europe)</option>
+                                <option value="portal">University Portal</option>
+                                <option value="coalition">Coalition App</option>
+                                <option value="common-app">Common App</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-account">Account Created?</label>
+                            <select id="masters-account">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="masters-start-date">Application Start Date *</label>
+                            <input type="date" id="masters-start-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-end-date">Application Deadline *</label>
+                            <input type="date" id="masters-end-date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="masters-course-link">Course Link</label>
+                            <input type="url" id="masters-course-link" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-portal-link">Application Portal Link</label>
+                            <input type="url" id="masters-portal-link" placeholder="https://apply.university.edu">
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-status">Status</label>
+                            <select id="masters-status">
+                                <option value="pending">Pending</option>
+                                <option value="applied">Applied</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="masters-missing">Missing Documents</label>
+                        <textarea id="masters-missing" placeholder="e.g., Transcript, LOR, etc..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="masters-username">Username/Email</label>
+                            <input type="text" id="masters-username" placeholder="your.email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="masters-password">Password</label>
+                            <input type="text" id="masters-password" placeholder="Password (shown in plain text)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="masters-notes">Additional Notes</label>
+                        <textarea id="masters-notes" placeholder="Any important information..."></textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="addMastersApplication()">Add Masters Program</button>
+                        <button class="btn btn-secondary" onclick="clearMastersForm()">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REMINDERS TAB -->
+            <div id="reminders" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">🔔 Smart Reminders & Action Items</h2>
+                    <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 var(--spacing-md) 0;">
+                        <strong>PhD:</strong> Shows only on reminder date OR 1 day before (disappears after)<br>
+                        <strong>Masters:</strong> Shows ONLY when: today ≤ deadline AND status = "Pending"
+                    </p>
+
+                    <div class="filter-controls">
+                        <select id="reminder-sort" onchange="renderReminders()" style="flex: 1; min-width: 200px;">
+                            <option value="deadline">📅 Deadline (Nearest First)</option>
+                            <option value="urgency">🚨 Urgency</option>
+                            <option value="type">🎓 Type (Masters/PhD)</option>
+                            <option value="country">🌍 Country</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="refreshReminders()">🔄 Refresh</button>
+                    </div>
+
+                    <div id="reminders-list" style="min-height: 200px;">
+                        <div class="empty-state">Loading reminders...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PhD TRACKER TAB -->
+            <div id="phd-tracker" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">🎓 PhD Contacts & Follow-ups</h2>
+
+                    <div class="filter-controls">
+                        <input type="text" id="search-phd" placeholder="🔍 Search..." onkeyup="renderPhdTracker()">
+                        <select id="filter-country-phd" onchange="renderPhdTracker()" style="min-width: 150px;">
+                            <option value="">All Countries</option>
+                        </select>
+                        <select id="filter-status-phd" onchange="renderPhdTracker()" style="min-width: 150px;">
+                            <option value="">All Status</option>
+                            <option value="no-reply">No Reply Yet</option>
+                            <option value="replied">Replied</option>
+                            <option value="positive">Positive</option>
+                            <option value="interview">Interview</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="phd-table">
+                            <thead>
+                                <tr>
+                                    <th>Professor</th>
+                                    <th>University</th>
+                                    <th>Country</th>
+                                    <th>Research</th>
+                                    <th>Status</th>
+                                    <th>Reminder Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="phd-tbody">
+                                <tr>
+                                    <td colspan="7" class="empty-state">No PhD contacts</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MASTERS TRACKER TAB -->
+            <div id="masters-tracker" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">📚 Masters Applications</h2>
+
+                    <div class="filter-controls">
+                        <input type="text" id="search-masters" placeholder="🔍 Search..." onkeyup="renderMastersTracker()">
+                        <select id="filter-country-masters" onchange="renderMastersTracker()" style="min-width: 150px;">
+                            <option value="">All Countries</option>
+                        </select>
+                        <select id="filter-status-masters" onchange="renderMastersTracker()" style="min-width: 150px;">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="applied">Applied</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <select id="filter-priority-masters" onchange="renderMastersTracker()" style="min-width: 150px;">
+                            <option value="">All Priority</option>
+                            <option value="high">High Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="masters-table">
+                            <thead>
+                                <tr>
+                                    <th>University</th>
+                                    <th>Country</th>
+                                    <th>Program</th>
+                                    <th>Deadline</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Fee</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="masters-tbody">
+                                <tr>
+                                    <td colspan="8" class="empty-state">No Masters applications</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <div class="modal-header">Edit Application</div>
+            <div id="modal-body"></div>
+            <div class="btn-group" style="margin-top: var(--spacing-lg);">
+                <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentUser = null;
+        let phdContacts = [];
+        let mastersApps = [];
+        let editingType = null;
+        let editingId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+
+        function checkAuth() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                currentUser = JSON.parse(user);
+                showMainApp();
+                loadAllData();
+                setInterval(loadAllData, 30000);
+            }
+        }
+
+        function switchLoginTab(tab) {
+            document.querySelectorAll('.login-form').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab + '-form').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showMainApp();
+                    loadAllData();
+                } else {
+                    document.getElementById('login-error').textContent = data.error || 'Login failed';
+                }
+            } catch (error) {
+                document.getElementById('login-error').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const phone = document.getElementById('register-phone').value;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, phone })
+                });
+
+                const data = await res.json();
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showMainApp();
+                    loadAllData();
+                } else {
+                    document.getElementById('register-error').textContent = data.error || 'Registration failed';
+                }
+            } catch (error) {
+                document.getElementById('register-error').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('user');
+            currentUser = null;
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-form').reset();
+            document.getElementById('register-form').reset();
+        }
+
+        function showMainApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('display-name').textContent = currentUser.name;
+            document.getElementById('display-email').textContent = currentUser.email;
+        }
+
+        async function loadAllData() {
+            try {
+                const [phdRes, mastersRes] = await Promise.all([
+                    fetch(`${API_URL}/phd-contacts?user_id=${currentUser.id}`),
+                    fetch(`${API_URL}/masters-apps?user_id=${currentUser.id}`)
+                ]);
+
+                if (phdRes.ok) phdContacts = await phdRes.json();
+                if (mastersRes.ok) mastersApps = await mastersRes.json();
+
+                renderPhdTracker();
+                renderMastersTracker();
+                renderReminders();
+                updateStats();
+                updateCountryFilters();
+            } catch (error) {
+                showAlert('Error loading data: ' + error.message, 'error');
+            }
+        }
+
+        async function addPhDContact() {
+            const name = document.getElementById('phd-professor-name').value.trim();
+            const university = document.getElementById('phd-university').value.trim();
+            const email = document.getElementById('phd-email').value.trim();
+            const research = document.getElementById('phd-research').value.trim();
+            const country = document.getElementById('phd-country').value.trim();
+            const followUpDate = document.getElementById('phd-follow-up').value;
+
+            if (!name || !university || !email || !research || !country || !followUpDate) {
+                showAlert('Please fill all required fields (*)', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/phd-contacts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        professor_name: name,
+                        prof_degree: document.getElementById('phd-degree').value,
+                        university,
+                        country,
+                        department: document.getElementById('phd-department').value,
+                        email,
+                        research_focus: research,
+                        prof_webpage: document.getElementById('phd-prof-webpage').value,
+                        prof_google_scholar: document.getElementById('phd-scholar').value,
+                        faculty_page: document.getElementById('phd-faculty-page').value,
+                        email_sent_date: document.getElementById('phd-email-sent-date').value || new Date().toISOString().split('T')[0],
+                        follow_up_date: followUpDate,
+                        status: document.getElementById('phd-status').value,
+                        notes: document.getElementById('phd-notes').value
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to add');
+                showAlert('✓ PhD contact added!', 'success');
+                clearPhDForm();
+                loadAllData();
+                switchTab(null, 'phd-tracker');
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function addMastersApplication() {
+            const country = document.getElementById('masters-country').value.trim();
+            const university = document.getElementById('masters-university').value.trim();
+            const major = document.getElementById('masters-major').value.trim();
+            const startDate = document.getElementById('masters-start-date').value;
+            const deadline = document.getElementById('masters-end-date').value;
+
+            if (!country || !university || !major || !startDate || !deadline) {
+                showAlert('Please fill Country, University, Program, Start Date, and Deadline (*)', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/masters-apps`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        country,
+                        university,
+                        major,
+                        admission_fee: document.getElementById('masters-admission-fee').value || 0,
+                        tuition_fee: document.getElementById('masters-tuition-fee').value || 0,
+                        gre_needed: document.getElementById('masters-gre').value,
+                        language_test: document.getElementById('masters-language').value,
+                        application_route: document.getElementById('masters-route').value,
+                        start_date: startDate,
+                        end_date: deadline,
+                        course_link: document.getElementById('masters-course-link').value,
+                        portal_link: document.getElementById('masters-portal-link').value,
+                        account_created: document.getElementById('masters-account').value === 'yes' ? 1 : 0,
+                        priority: document.getElementById('masters-priority').value,
+                        application_status: document.getElementById('masters-status').value,
+                        missing_documents: document.getElementById('masters-missing').value,
+                        username: document.getElementById('masters-username').value,
+                        password: document.getElementById('masters-password').value,
+                        notes: document.getElementById('masters-notes').value
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to add');
+                showAlert('✓ Masters program added!', 'success');
+                clearMastersForm();
+                loadAllData();
+                switchTab(null, 'masters-tracker');
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        function editPhD(id) {
+            const contact = phdContacts.find(c => c.id === id);
+            if (!contact) return;
+
+            editingType = 'phd';
+            editingId = id;
+
+            const form = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Professor Name</label>
+                        <input type="text" id="edit-phd-name" value="${contact.professor_name}">
+                    </div>
+                    <div class="form-group">
+                        <label>Degree</label>
+                        <select id="edit-phd-degree">
+                            <option value="PhD" ${contact.prof_degree === 'PhD' ? 'selected' : ''}>PhD</option>
+                            <option value="Prof" ${contact.prof_degree === 'Prof' ? 'selected' : ''}>Prof</option>
+                            <option value="Dr" ${contact.prof_degree === 'Dr' ? 'selected' : ''}>Dr</option>
+                            <option value="Associate Prof" ${contact.prof_degree === 'Associate Prof' ? 'selected' : ''}>Associate Prof</option>
+                            <option value="Assistant Prof" ${contact.prof_degree === 'Assistant Prof' ? 'selected' : ''}>Assistant Prof</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>University</label>
+                        <input type="text" id="edit-phd-uni" value="${contact.university}">
+                    </div>
+                    <div class="form-group">
+                        <label>Country</label>
+                        <select id="edit-phd-country">
+                            <option value="USA" ${contact.country === 'USA' ? 'selected' : ''}>🇺🇸 United States</option>
+                            <option value="Canada" ${contact.country === 'Canada' ? 'selected' : ''}>🇨🇦 Canada</option>
+                            <option value="UK" ${contact.country === 'UK' ? 'selected' : ''}>🇬🇧 United Kingdom</option>
+                            <option value="Germany" ${contact.country === 'Germany' ? 'selected' : ''}>🇩🇪 Germany</option>
+                            <option value="Netherlands" ${contact.country === 'Netherlands' ? 'selected' : ''}>🇳🇱 Netherlands</option>
+                            <option value="Switzerland" ${contact.country === 'Switzerland' ? 'selected' : ''}>🇨🇭 Switzerland</option>
+                            <option value="Australia" ${contact.country === 'Australia' ? 'selected' : ''}>🇦🇺 Australia</option>
+                            <option value="France" ${contact.country === 'France' ? 'selected' : ''}>🇫🇷 France</option>
+                            <option value="Sweden" ${contact.country === 'Sweden' ? 'selected' : ''}>🇸🇪 Sweden</option>
+                            <option value="Denmark" ${contact.country === 'Denmark' ? 'selected' : ''}>🇩🇰 Denmark</option>
+                            <option value="Singapore" ${contact.country === 'Singapore' ? 'selected' : ''}>🇸🇬 Singapore</option>
+                            <option value="Japan" ${contact.country === 'Japan' ? 'selected' : ''}>🇯🇵 Japan</option>
+                            <option value="South Korea" ${contact.country === 'South Korea' ? 'selected' : ''}>🇰🇷 South Korea</option>
+                            <option value="Taiwan" ${contact.country === 'Taiwan' ? 'selected' : ''}>🇹🇼 Taiwan</option>
+                            <option value="Israel" ${contact.country === 'Israel' ? 'selected' : ''}>🇮🇱 Israel</option>
+                            <option value="Iran" ${contact.country === 'Iran' ? 'selected' : ''}>🇮🇷 Iran</option>
+                            <option value="Other" ${contact.country === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Department</label>
+                        <input type="text" id="edit-phd-dept" value="${contact.department || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="edit-phd-email" value="${contact.email}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Research Focus</label>
+                    <input type="text" id="edit-phd-research" value="${contact.research_focus}">
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Prof Webpage</label>
+                        <input type="url" id="edit-phd-webpage" value="${contact.prof_webpage || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Google Scholar</label>
+                        <input type="url" id="edit-phd-scholar" value="${contact.prof_google_scholar || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Faculty Page</label>
+                        <input type="url" id="edit-phd-faculty" value="${contact.faculty_page || ''}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email Sent Date</label>
+                        <input type="date" id="edit-phd-sent-date" value="${contact.email_sent_date || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Follow-up Reminder Date</label>
+                        <input type="date" id="edit-phd-followup" value="${contact.follow_up_date}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="edit-phd-status">
+                        <option value="no-reply" ${contact.status === 'no-reply' ? 'selected' : ''}>No Reply</option>
+                        <option value="replied" ${contact.status === 'replied' ? 'selected' : ''}>Replied</option>
+                        <option value="positive" ${contact.status === 'positive' ? 'selected' : ''}>Positive</option>
+                        <option value="interview" ${contact.status === 'interview' ? 'selected' : ''}>Interview</option>
+                        <option value="rejected" ${contact.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="edit-phd-notes">${contact.notes || ''}</textarea>
+                </div>
+            `;
+
+            document.getElementById('modal-body').innerHTML = form;
+            document.getElementById('edit-modal').classList.add('active');
+        }
+
+        function editMasters(id) {
+            const app = mastersApps.find(a => a.id === id);
+            if (!app) return;
+
+            editingType = 'masters';
+            editingId = id;
+
+            const form = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Country</label>
+                        <select id="edit-masters-country">
+                            <option value="USA" ${app.country === 'USA' ? 'selected' : ''}>🇺🇸 United States</option>
+                            <option value="Canada" ${app.country === 'Canada' ? 'selected' : ''}>🇨🇦 Canada</option>
+                            <option value="UK" ${app.country === 'UK' ? 'selected' : ''}>🇬🇧 United Kingdom</option>
+                            <option value="Germany" ${app.country === 'Germany' ? 'selected' : ''}>🇩🇪 Germany</option>
+                            <option value="Netherlands" ${app.country === 'Netherlands' ? 'selected' : ''}>🇳🇱 Netherlands</option>
+                            <option value="Switzerland" ${app.country === 'Switzerland' ? 'selected' : ''}>🇨🇭 Switzerland</option>
+                            <option value="Australia" ${app.country === 'Australia' ? 'selected' : ''}>🇦🇺 Australia</option>
+                            <option value="France" ${app.country === 'France' ? 'selected' : ''}>🇫🇷 France</option>
+                            <option value="Sweden" ${app.country === 'Sweden' ? 'selected' : ''}>🇸🇪 Sweden</option>
+                            <option value="Denmark" ${app.country === 'Denmark' ? 'selected' : ''}>🇩🇰 Denmark</option>
+                            <option value="Singapore" ${app.country === 'Singapore' ? 'selected' : ''}>🇸🇬 Singapore</option>
+                            <option value="Japan" ${app.country === 'Japan' ? 'selected' : ''}>🇯🇵 Japan</option>
+                            <option value="South Korea" ${app.country === 'South Korea' ? 'selected' : ''}>🇰🇷 South Korea</option>
+                            <option value="Taiwan" ${app.country === 'Taiwan' ? 'selected' : ''}>🇹🇼 Taiwan</option>
+                            <option value="Israel" ${app.country === 'Israel' ? 'selected' : ''}>🇮🇱 Israel</option>
+                            <option value="Iran" ${app.country === 'Iran' ? 'selected' : ''}>🇮🇷 Iran</option>
+                            <option value="Other" ${app.country === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>University</label>
+                        <input type="text" id="edit-masters-uni" value="${app.university}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Program</label>
+                        <input type="text" id="edit-masters-major" value="${app.major}">
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="edit-masters-priority">
+                            <option value="high" ${app.priority === 'high' ? 'selected' : ''}>🔴 High</option>
+                            <option value="medium" ${app.priority === 'medium' ? 'selected' : ''}>🟡 Medium</option>
+                            <option value="low" ${app.priority === 'low' ? 'selected' : ''}>🟢 Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Admission Fee</label>
+                        <input type="number" id="edit-masters-admissionfee" value="${app.admission_fee || 0}">
+                    </div>
+                    <div class="form-group">
+                        <label>Tuition Fee/Year</label>
+                        <input type="number" id="edit-masters-tuitionfee" value="${app.tuition_fee || 0}">
+                    </div>
+                    <div class="form-group">
+                        <label>GRE Needed?</label>
+                        <select id="edit-masters-gre">
+                            <option value="no" ${app.gre_needed === 'no' ? 'selected' : ''}>Not Required</option>
+                            <option value="yes" ${app.gre_needed === 'yes' ? 'selected' : ''}>Required</option>
+                            <option value="optional" ${app.gre_needed === 'optional' ? 'selected' : ''}>Optional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Language Test</label>
+                        <select id="edit-masters-language">
+                            <option value="">None</option>
+                            <option value="IELTS" ${app.language_test === 'IELTS' ? 'selected' : ''}>IELTS</option>
+                            <option value="TOEFL" ${app.language_test === 'TOEFL' ? 'selected' : ''}>TOEFL</option>
+                            <option value="PTE" ${app.language_test === 'PTE' ? 'selected' : ''}>PTE</option>
+                            <option value="Duolingo" ${app.language_test === 'Duolingo' ? 'selected' : ''}>Duolingo</option>
+                            <option value="DSH" ${app.language_test === 'DSH' ? 'selected' : ''}>DSH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Application Route</label>
+                        <select id="edit-masters-route">
+                            <option value="">Select</option>
+                            <option value="direct" ${app.application_route === 'direct' ? 'selected' : ''}>Direct</option>
+                            <option value="uni-assist" ${app.application_route === 'uni-assist' ? 'selected' : ''}>Uni-Assist</option>
+                            <option value="portal" ${app.application_route === 'portal' ? 'selected' : ''}>Portal</option>
+                            <option value="coalition" ${app.application_route === 'coalition' ? 'selected' : ''}>Coalition</option>
+                            <option value="common-app" ${app.application_route === 'common-app' ? 'selected' : ''}>Common App</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Account Created?</label>
+                        <select id="edit-masters-account">
+                            <option value="no" ${app.account_created === 0 ? 'selected' : ''}>No</option>
+                            <option value="yes" ${app.account_created === 1 ? 'selected' : ''}>Yes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="edit-masters-startdate" value="${app.start_date || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline</label>
+                        <input type="date" id="edit-masters-deadline" value="${app.end_date}">
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Course Link</label>
+                        <input type="url" id="edit-masters-courselink" value="${app.course_link || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Portal Link</label>
+                        <input type="url" id="edit-masters-portallink" value="${app.portal_link || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="edit-masters-status">
+                            <option value="pending" ${app.application_status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="applied" ${app.application_status === 'applied' ? 'selected' : ''}>Applied</option>
+                            <option value="accepted" ${app.application_status === 'accepted' ? 'selected' : ''}>Accepted</option>
+                            <option value="rejected" ${app.application_status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Missing Documents</label>
+                    <textarea id="edit-masters-missing">${app.missing_documents || ''}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="edit-masters-username" value="${app.username || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Password (Plain Text)</label>
+                        <input type="text" id="edit-masters-password" value="${app.password || ''}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="edit-masters-notes">${app.notes || ''}</textarea>
+                </div>
+            `;
+
+            document.getElementById('modal-body').innerHTML = form;
+            document.getElementById('edit-modal').classList.add('active');
+        }
+
+        async function saveEdit() {
+            try {
+                if (editingType === 'phd') {
+                    await fetch(`${API_URL}/phd-contacts/${editingId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            professor_name: document.getElementById('edit-phd-name').value,
+                            prof_degree: document.getElementById('edit-phd-degree').value,
+                            university: document.getElementById('edit-phd-uni').value,
+                            country: document.getElementById('edit-phd-country').value,
+                            department: document.getElementById('edit-phd-dept').value,
+                            email: document.getElementById('edit-phd-email').value,
+                            research_focus: document.getElementById('edit-phd-research').value,
+                            prof_webpage: document.getElementById('edit-phd-webpage').value,
+                            prof_google_scholar: document.getElementById('edit-phd-scholar').value,
+                            faculty_page: document.getElementById('edit-phd-faculty').value,
+                            email_sent_date: document.getElementById('edit-phd-sent-date').value,
+                            follow_up_date: document.getElementById('edit-phd-followup').value,
+                            status: document.getElementById('edit-phd-status').value,
+                            notes: document.getElementById('edit-phd-notes').value
+                        })
+                    });
+                } else if (editingType === 'masters') {
+                    await fetch(`${API_URL}/masters-apps/${editingId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            country: document.getElementById('edit-masters-country').value,
+                            university: document.getElementById('edit-masters-uni').value,
+                            major: document.getElementById('edit-masters-major').value,
+                            admission_fee: document.getElementById('edit-masters-admissionfee').value,
+                            tuition_fee: document.getElementById('edit-masters-tuitionfee').value,
+                            gre_needed: document.getElementById('edit-masters-gre').value,
+                            language_test: document.getElementById('edit-masters-language').value,
+                            application_route: document.getElementById('edit-masters-route').value,
+                            start_date: document.getElementById('edit-masters-startdate').value,
+                            end_date: document.getElementById('edit-masters-deadline').value,
+                            course_link: document.getElementById('edit-masters-courselink').value,
+                            portal_link: document.getElementById('edit-masters-portallink').value,
+                            account_created: document.getElementById('edit-masters-account').value === 'yes' ? 1 : 0,
+                            priority: document.getElementById('edit-masters-priority').value,
+                            application_status: document.getElementById('edit-masters-status').value,
+                            missing_documents: document.getElementById('edit-masters-missing').value,
+                            username: document.getElementById('edit-masters-username').value,
+                            password: document.getElementById('edit-masters-password').value,
+                            notes: document.getElementById('edit-masters-notes').value
+                        })
+                    });
+                }
+
+                showAlert('✓ Updated!', 'success');
+                closeEditModal();
+                loadAllData();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.remove('active');
+            editingType = null;
+            editingId = null;
+        }
+
+        function isPhdReminderActive(reminderDate) {
+            if (!reminderDate) return false;
+
+            // today (local)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // parse YYYY-MM-DD safely (NO new Date("2025-12-26"))
+            const parts = reminderDate.split("-");
+            if (parts.length !== 3) return false;
+
+            const year = Number(parts[0]);
+            const month = Number(parts[1]);
+            const day = Number(parts[2]);
+            if (!year || !month || !day) return false;
+
+            const reminder = new Date(year, month - 1, day); // local
+            reminder.setHours(0, 0, 0, 0);
+
+            // 1 day before
+            const oneDayBefore = new Date(reminder);
+            oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+
+            // 30 days after
+            const thirtyDaysAfter = new Date(reminder);
+            thirtyDaysAfter.setDate(thirtyDaysAfter.getDate() + 30);
+
+            // SHOW: 1 day before → 30 days after
+            return today >= oneDayBefore && today <= thirtyDaysAfter;
+        }
+
+
+        function isApplicationWindow(startDate, endDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const start = new Date(startDate);
+            start.setHours(0, 0, 0, 0);
+
+            const end = new Date(endDate);
+            end.setHours(0, 0, 0, 0);
+
+            // Show ONLY: start date <= today <= end date
+            return today >= start && today <= end;
+        }
+
+        async function renderReminders() {
+            try {
+                const allReminders = [];
+
+                // PhD - ONLY when reminder is ACTIVE (1 day before to reminder date, NOT after)
+                phdContacts.filter(contact => contact.status === 'no-reply').forEach(contact => {
+                    if (isPhdReminderActive(contact.follow_up_date)) {
+                        const reminderDate = new Date(contact.follow_up_date);
+                        reminderDate.setHours(0, 0, 0, 0);
+
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        const daysUntil = Math.floor((reminderDate - today) / (1000 * 60 * 60 * 24));
+
+                        allReminders.push({
+                            type: 'phd',
+                            name: contact.professor_name,
+                            detail: contact.university,
+                            country: contact.country,
+                            date: contact.follow_up_date,
+                            daysUntil,
+                            status: contact.status,
+                            id: contact.id
+                        });
+                    }
+                });
+
+                // Masters - ONLY when in application window AND status = pending
+                mastersApps.filter(app => app.application_status === 'pending').forEach(app => {
+                    if (isApplicationWindow(app.start_date, app.end_date)) {
+                        const deadline = new Date(app.end_date);
+                        deadline.setHours(0, 0, 0, 0);
+
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        const daysUntil = Math.floor((deadline - today) / (1000 * 60 * 60 * 24));
+
+                        allReminders.push({
+                            type: 'masters',
+                            name: app.university,
+                            detail: app.major,
+                            country: app.country,
+                            date: app.end_date,
+                            daysUntil,
+                            status: app.application_status,
+                            id: app.id,
+                            priority: app.priority
+                        });
+                    }
+                });
+
+                const sortBy = document.getElementById('reminder-sort')?.value || 'deadline';
+                allReminders.sort((a, b) => {
+                    if (sortBy === 'deadline') return a.daysUntil - b.daysUntil;
+                    if (sortBy === 'urgency') return b.daysUntil - a.daysUntil;
+                    if (sortBy === 'type') return a.type.localeCompare(b.type);
+                    if (sortBy === 'country') return a.country.localeCompare(b.country);
+                });
+
+                if (allReminders.length === 0) {
+                    document.getElementById('reminders-list').innerHTML = '<div class="empty-state">🎉 All caught up! No active reminders right now.</div>';
+                    return;
+                }
+
+                const html = allReminders.map(r => {
+                    let urgencyClass = 'info';
+                    let urgencyBadge = '📌 Upcoming';
+
+                    if (r.type === 'phd') {
+                        // PhD: Show OVERDUE (negative days)
+                        if (r.daysUntil < 0) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 ${Math.abs(r.daysUntil)} days OVERDUE</span>`;
+                        } else if (r.daysUntil === 0) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 TODAY</span>`;
+                        } else if (r.daysUntil === 1) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 TOMORROW</span>`;
+                        } else if (r.daysUntil <= 30) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 ${r.daysUntil} days remaining</span>`;
+                        }
+                    } else if (r.type === 'masters') {
+                        // Masters: Show DAYS LEFT until deadline
+                        if (r.daysUntil < 0) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 PASSED DEADLINE</span>`;
+                        } else if (r.daysUntil === 0) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 DEADLINE TODAY</span>`;
+                        } else if (r.daysUntil <= 3) {
+                            urgencyClass = 'urgent';
+                            urgencyBadge = `<span class="urgency-badge urgency-critical">🚨 ${r.daysUntil} days left</span>`;
+                        } else if (r.daysUntil <= 7) {
+                            urgencyClass = 'warning';
+                            urgencyBadge = `<span class="urgency-badge urgency-high">⚠️ ${r.daysUntil} days left</span>`;
+                        } else {
+                            urgencyClass = 'info';
+                            urgencyBadge = `<span class="urgency-badge urgency-info">📅 ${r.daysUntil} days left</span>`;
+                        }
+                    }
+
+
+                    const editBtn = r.type === 'phd' ? 
+                        `<button class="btn btn-info" onclick="editPhD(${r.id})">✏️ Edit</button>` :
+                        `<button class="btn btn-info" onclick="editMasters(${r.id})">✏️ Edit</button>`;
+
+                    return `
+                        <div class="reminder-card ${urgencyClass}">
+                            <div class="reminder-title">
+                                ${urgencyBadge}
+                                ${r.type === 'masters' ? '📚' : '🎓'} ${r.name}
+                            </div>
+                            <div class="reminder-meta">
+                                <div>
+                                    <div class="reminder-meta-label">${r.type === 'masters' ? 'Program' : 'University'}</div>
+                                    <div class="reminder-meta-value">${r.detail}</div>
+                                </div>
+                                <div>
+                                    <div class="reminder-meta-label">${r.type === 'masters' ? 'Deadline' : 'Reminder Date'}</div>
+                                    <div class="reminder-meta-value">${r.date}</div>
+                                </div>
+                                <div>
+                                    <div class="reminder-meta-label">Country</div>
+                                    <div class="reminder-meta-value">${r.country}</div>
+                                </div>
+                                <div>
+                                    <div class="reminder-meta-label">Status</div>
+                                    <div class="reminder-meta-value"><span class="status-badge status-${r.status}">${r.status}</span></div>
+                                </div>
+                            </div>
+                            <div class="action-links">
+                                ${editBtn}
+                                <button class="btn btn-danger" onclick="${r.type === 'phd' ? `deletePhD(${r.id})` : `deleteMasters(${r.id})`}">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('reminders-list').innerHTML = html;
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        function renderPhdTracker() {
+            const tbody = document.getElementById('phd-tbody');
+            const search = document.getElementById('search-phd')?.value.toLowerCase() || '';
+            const country = document.getElementById('filter-country-phd')?.value || '';
+            const status = document.getElementById('filter-status-phd')?.value || '';
+
+            let filtered = phdContacts.filter(c => {
+                const searchMatch = !search || c.professor_name.toLowerCase().includes(search) || c.university.toLowerCase().includes(search);
+                const countryMatch = !country || c.country === country;
+                const statusMatch = !status || c.status === status;
+                return searchMatch && countryMatch && statusMatch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No PhD contacts</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(contact => `
+                <tr>
+                    <td><strong>${contact.professor_name}</strong></td>
+                    <td>${contact.university}</td>
+                    <td>${contact.country}</td>
+                    <td>${contact.research_focus}</td>
+                    <td><span class="status-badge status-${contact.status}">${contact.status}</span></td>
+                    <td>${contact.follow_up_date || '-'}</td>
+                    <td>
+                        <button class="btn btn-info" onclick="editPhD(${contact.id})">✏️ Edit</button>
+                        <button class="btn btn-danger" onclick="deletePhD(${contact.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMastersTracker() {
+            const tbody = document.getElementById('masters-tbody');
+            const search = document.getElementById('search-masters')?.value.toLowerCase() || '';
+            const country = document.getElementById('filter-country-masters')?.value || '';
+            const status = document.getElementById('filter-status-masters')?.value || '';
+            const priority = document.getElementById('filter-priority-masters')?.value || '';
+
+            let filtered = mastersApps.filter(app => {
+                const searchMatch = !search || app.university.toLowerCase().includes(search) || app.major.toLowerCase().includes(search);
+                const countryMatch = !country || app.country === country;
+                const statusMatch = !status || app.application_status === status;
+                const priorityMatch = !priority || app.priority === priority;
+                return searchMatch && countryMatch && statusMatch && priorityMatch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No Masters applications</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(app => `
+                <tr>
+                    <td><strong>${app.university}</strong></td>
+                    <td>${app.country}</td>
+                    <td>${app.major}</td>
+                    <td>${app.end_date || '-'}</td>
+                    <td><span class="status-badge status-${app.application_status}">${app.application_status}</span></td>
+                    <td>${app.priority === 'high' ? '🔴' : app.priority === 'medium' ? '🟡' : '🟢'}</td>
+                    <td>€${app.tuition_fee || 0}</td>
+                    <td>
+                        <button class="btn btn-info" onclick="editMasters(${app.id})">✏️ Edit</button>
+                        <button class="btn btn-danger" onclick="deleteMasters(${app.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deletePhD(id) {
+            if (!confirm('Delete this PhD contact?')) return;
+            try {
+                await fetch(`${API_URL}/phd-contacts/${id}`, { method: 'DELETE' });
+                showAlert('✓ Deleted!', 'success');
+                loadAllData();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteMasters(id) {
+            if (!confirm('Delete this application?')) return;
+            try {
+                await fetch(`${API_URL}/masters-apps/${id}`, { method: 'DELETE' });
+                showAlert('✓ Deleted!', 'success');
+                loadAllData();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        function updateCountryFilters() {
+            const phdCountries = [...new Set(phdContacts.map(c => c.country))].sort();
+            const mastersCountries = [...new Set(mastersApps.map(a => a.country))].sort();
+
+            ['filter-country-phd', 'filter-country-masters'].forEach(id => {
+                const select = document.getElementById(id);
+                const current = select.value;
+                select.innerHTML = '<option value="">All Countries</option>' + 
+                    phdCountries.map(c => `<option value="${c}">${c}</option>`).join('') +
+                    mastersCountries.map(c => `<option value="${c}">${c}</option>`).join('');
+                select.value = current;
+            });
+        }
+
+        function updateStats() {
+            const total = phdContacts.length + mastersApps.length;
+            const pending = mastersApps.filter(a => a.application_status === 'pending').length;
+            const noreply = phdContacts.filter(c => c.status === 'no-reply').length;
+            const applied = mastersApps.filter(a => a.application_status === 'applied').length;
+
+            // Count ACTIVE reminders only
+            const activeReminders = phdContacts.filter(c => c.status === 'no-reply' && isPhdReminderActive(c.follow_up_date)).length +
+                mastersApps.filter(a => a.application_status === 'pending' && isApplicationWindow(a.start_date, a.end_date)).length;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('pending-count').textContent = pending;
+            document.getElementById('noreply-count').textContent = noreply;
+            document.getElementById('applied-count').textContent = applied;
+            document.getElementById('deadline-count').textContent = activeReminders;
+        }
+
+        function refreshReminders() {
+            renderReminders();
+            showAlert('Reminders refreshed!', 'success');
+        }
+
+        function switchTab(event, tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            if (event) event.target.classList.add('active');
+        }
+
+        function clearPhDForm() {
+            document.getElementById('phd-professor-name').value = '';
+            document.getElementById('phd-university').value = '';
+            document.getElementById('phd-country').value = '';
+            document.getElementById('phd-email').value = '';
+            document.getElementById('phd-research').value = '';
+            document.getElementById('phd-follow-up').value = '';
+            document.getElementById('phd-notes').value = '';
+        }
+
+        function clearMastersForm() {
+            document.querySelectorAll('[id^="masters-"]').forEach(el => {
+                if (el.type === 'text' || el.type === 'email' || el.type === 'url' || el.type === 'number' || el.type === 'date' || el.type === 'password') {
+                    el.value = '';
+                } else if (el.tagName === 'TEXTAREA') {
+                    el.value = '';
+                } else if (el.tagName === 'SELECT') {
+                    el.value = '';
+                }
+            });
+        }
+
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 4000);
+        }
+    </script>
+</body>
+</html>
