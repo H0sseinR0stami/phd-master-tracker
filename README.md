@@ -80,7 +80,7 @@ phd-masters-tracker-v4.3/
 
 ### Backend
 - **Express.js** - REST API server
-- **SQLite3** - Local database
+- **postgresql** - Local database
 - **Node.js** - JavaScript runtime
 
 ### Frontend
@@ -323,4 +323,5 @@ For issues or questions:
 **Built with ❤️ for graduate students managing multiple applications**
 
 🎓 Good luck with your PhD and Masters applications! 📚
+
 
